@@ -22,18 +22,19 @@ function removeLoadingSpinner() {
 async function getQuote() {
   showLoadingSpinner();
   try {
-    const response = await fetch("https://zenquotes.io/api/random");
-    console.log("API Response:", response);
-
+    const response = await fetch(
+      "https://api.allorigins.win/get?url=" +
+        encodeURIComponent("https://zenquotes.io/api/random")
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("Quote Data:", data);
+    const quoteData = JSON.parse(data.contents); // Extract actual JSON data
 
-    quoteText.innerText = data[0].q; // Quote text
-    authorText.innerText = data[0].a ? data[0].a : "Unknown"; // Author
+    quoteText.innerText = quoteData[0].q;
+    authorText.innerText = quoteData[0].a ? quoteData[0].a : "Unknown";
   } catch (error) {
     console.error("Error fetching quote:", error);
     quoteText.innerText = "Oops! Could not fetch a quote.";
