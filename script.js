@@ -22,12 +22,14 @@ function removeLoadingSpinner() {
 async function getQuote() {
   showLoadingSpinner();
   try {
-    const response = await fetch("https://zenquotes.io/api/random");
+    const response = await fetch("https://type.fit/api/quotes");
     if (!response.ok) throw new Error("Failed to fetch quote");
 
     const data = await response.json();
-    quoteText.innerText = data[0].q; // Quote text
-    authorText.innerText = data[0].a ? data[0].a : "Unknown"; // Author
+    const randomQuote = data[Math.floor(Math.random() * data.length)];
+
+    quoteText.innerText = randomQuote.text;
+    authorText.innerText = randomQuote.author ? randomQuote.author : "Unknown";
   } catch (error) {
     console.error("Error fetching quote:", error);
     quoteText.innerText = "Oops! Could not fetch a quote.";
