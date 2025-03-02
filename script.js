@@ -19,27 +19,15 @@ function removeLoadingSpinner() {
   }
 }
 
-// Get Quote from quotable API
 async function getQuote() {
   showLoadingSpinner();
   try {
-    const response = await fetch("https://api.quotable.io/random");
+    const response = await fetch("https://zenquotes.io/api/random");
+    if (!response.ok) throw new Error("Failed to fetch quote");
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch quote");
-    }
-
-    const quote = await response.json();
-
-    // Reduce font size for long quotes
-    if (quote.content.length > 120) {
-      quoteText.classList.add("long-quote");
-    } else {
-      quoteText.classList.remove("long-quote");
-    }
-
-    quoteText.innerText = quote.content;
-    authorText.innerText = quote.author ? quote.author : "Unknown";
+    const data = await response.json();
+    quoteText.innerText = data[0].q; // Quote text
+    authorText.innerText = data[0].a ? data[0].a : "Unknown"; // Author
   } catch (error) {
     console.error("Error fetching quote:", error);
     quoteText.innerText = "Oops! Could not fetch a quote.";
