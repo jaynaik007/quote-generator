@@ -24,6 +24,11 @@ async function getQuote() {
   showLoadingSpinner();
   try {
     const response = await fetch("https://api.quotable.io/random");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch quote");
+    }
+
     const quote = await response.json();
 
     // Reduce font size for long quotes
@@ -32,15 +37,15 @@ async function getQuote() {
     } else {
       quoteText.classList.remove("long-quote");
     }
+
     quoteText.innerText = quote.content;
-
-    quote.author === "" ? "Unknown" : (authorText.innerText = quote.author);
-
-    // Stop loader and show Quote
-    removeLoadingSpinner();
+    authorText.innerText = quote.author ? quote.author : "Unknown";
   } catch (error) {
-    getQuote();
-    console.log("Whoops, no quote !", error);
+    console.error("Error fetching quote:", error);
+    quoteText.innerText = "Oops! Could not fetch a quote.";
+    authorText.innerText = "Try again later.";
+  } finally {
+    removeLoadingSpinner();
   }
 }
 
