@@ -22,16 +22,15 @@ function removeLoadingSpinner() {
 async function getQuote() {
   showLoadingSpinner();
   try {
-    const response = await fetch("https://zenquotes.io/api/random", {
-      mode: "no-cors",
-    });
-    console.log("API Response:", response); // Check if response is empty
+    const response = await fetch("https://api.quotable.io/random");
 
-    const data = await response.json();
-    console.log("Quote Data:", data); // Log the fetched data
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-    quoteText.innerText = data[0].q;
-    authorText.innerText = data[0].a ? data[0].a : "Unknown";
+    const quote = await response.json();
+    quoteText.innerText = quote.content;
+    authorText.innerText = quote.author ? quote.author : "Unknown";
   } catch (error) {
     console.error("Error fetching quote:", error);
     quoteText.innerText = "Oops! Could not fetch a quote.";
